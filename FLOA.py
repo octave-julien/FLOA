@@ -1,5 +1,7 @@
 import numpy as np
 import cv2
+from matplotlib import pyplot, transforms
+
 
 BANDWIDTH_FOR_MERGING_BREAKS = 15
 PAGE_EDGES_COLOR = (0,255,0)
@@ -171,12 +173,38 @@ class floa_results():
     def display(self,mode):
         if mode == "o":
             cv2.imshow(f"Original ({self.image_width}*{self.image_height})", self.image)
-        if mode == "g":
+        elif mode == "g":
             cv2.imshow(f"Original ({self.image_width}*{self.image_height})", self.grey_image)
-        if mode == "b":
+        elif mode == "b":
             cv2.imshow(f"Original ({self.image_width}*{self.image_height})", self.binarized_image)
+        else:
+            return False
         cv2.waitKey(0)
         return (True)
+    
+    def plot_profile(self, orientation, mode="o"):
+        if orientation == "v" and mode == "o":
+            data = self.v_projection_profile
+            base = pyplot.gca().transData
+            rot = transforms.Affine2D().rotate_deg(270)
+            pyplot.plot(data, transform = rot + base)
+        elif orientation == "h" and mode == "o":
+            data = self.h_projection_profile
+            pyplot.plot(data)
+        elif orientation == "v" and mode == "b":
+            data = self.v_binarized_projection_profile
+            base = pyplot.gca().transData
+            rot = transforms.Affine2D().rotate_deg(270)
+            pyplot.plot(data, transform = rot + base)
+        elif orientation == "h" and mode == "b":
+            data = self.h_binarized_projection_profile
+            pyplot.plot(data)
+        else:
+            return False
+        pyplot.show()
+        return True
+# test.plot_profile("v","o")
+
     #def __print__:
     #    print self.top_page_edge
 
@@ -244,15 +272,15 @@ def analyse(path_to_image_file):
     results.blocks_of_text = find_text_blocks(h_breaks_within_page, v_breaks_within_page)
 
     # Detection of lines
-    results.lines = []
-    for text_block_number, text_block in enumerate(results.blocks_of_text):
-        line_intervals = find_line_intervals(text_block, results) #
-        x1 = text_block[0] + results.left_page_edge
-        x2 = text_block[2] + results.left_page_edge
-        for each_line_interval in line_intervals:
-            y1, y2 = each_line_interval
-            y = (y1 + y2) // 2 + results.top_page_edge + text_block[1]
-            results.lines.append(((x1, y), (x2, y), text_block_number))
+    # results.lines = []
+    # for text_block_number, text_block in enumerate(results.blocks_of_text):
+    #     line_intervals = find_line_intervals(text_block, results) #
+    #     x1 = text_block[0] + results.left_page_edge
+    #     x2 = text_block[2] + results.left_page_edge
+    #     for each_line_interval in line_intervals:
+    #         y1, y2 = each_line_interval
+    #         y = (y1 + y2) // 2 + results.top_page_edge + text_block[1]
+    #         results.lines.append(((x1, y), (x2, y), text_block_number))
 
 
     return results
