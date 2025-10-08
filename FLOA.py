@@ -18,9 +18,9 @@ def give_projection_profile(image, orientation): #donneCourbeDensite(image, axe)
 
 def bw_thresholding(x, threshold):
     if x <= threshold:
-        return (0)
+        return 0
     else:
-        return (255)
+        return 255
 
 def binarize_projection_profile(projection_profile, threshold): #seuilleCourbeDensite(courbeDensite, seuil):
     # lumMoyenne = np.average(courbeDensite)
@@ -28,7 +28,7 @@ def binarize_projection_profile(projection_profile, threshold): #seuilleCourbeDe
     binarized_projection_profile = [bw_thresholding(x, threshold) for x in projection_profile]
     return binarized_projection_profile
 
-def smooth_projection_profile(projection_profile, bandwidth = 21): #lisseCourbe(courbe, fenetre = 21):
+def smooth_projection_profile(projection_profile, bandwidth=21): # lisseCourbe(courbe, fenetre = 21):
     length = len(projection_profile)    #longueurCourbe = len(courbe)
     half_bandwidth = bandwidth//2       #demiFenetre = fenetre//2
     start_of_smoothing = -(-bandwidth//2)-1 # debutLissage = -(-fenetre//2)-1
@@ -181,7 +181,7 @@ class floa_results():
             return False
         cv2.waitKey(0)
         return (True)
-    
+
     def plot_profile(self, orientation, mode="o"):
         if orientation == "v" and mode == "o":
             data = self.v_projection_profile
